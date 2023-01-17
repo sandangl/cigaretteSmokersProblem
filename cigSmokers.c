@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include <pthread.h>
 #include <semaphore.h>
 #include <threadlogger.h>
@@ -10,8 +11,22 @@ sem_t matches;
 sem_t place_on_table;
 
 void* agent(void* arg){
+	srand(time(NULL));
 	while(true){
-
+		int random = rand() % 3;
+		if(random == 0){
+			sem_post(paper);
+			sem_post(matches);
+		}
+		else if(random == 1){
+			sem_post(matches);
+			sem_post(tobacco);
+		}
+		else{
+			sem_post(tobacco);
+			sem_post(paper);
+		}
+		sem_wait(place_on_table);
 	}
 }
 
