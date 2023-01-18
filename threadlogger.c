@@ -16,6 +16,7 @@ void printSmokingEvent(char* thread_name){
 	strcat(msg, thread_name);
 	strcat(msg, SMOKING);
 	printer(msg);
+	free(msg);
 }
 
 void printSemaphoreEvent(char* thread_name, char* sem_name, bool acquired){
@@ -24,6 +25,7 @@ void printSemaphoreEvent(char* thread_name, char* sem_name, bool acquired){
 	strcat(msg, getStatus(acquired));
 	strcat(msg, sem_name);
 	printer(msg);
+	free(msg);
 }
 
 void printTableClear(char* thread_name){
@@ -31,4 +33,5 @@ void printTableClear(char* thread_name){
 	strcat(msg, thread_name);
 	strcat(msg, CLEARED);
 	printer(msg);
+	free(msg);
 }
