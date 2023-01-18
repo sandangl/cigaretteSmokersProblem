@@ -13,6 +13,7 @@
 #define ACQUIRED "acquired "
 #define RELEASED "released "
 #define CLEARED "table cleared."
+#define SMOKING "smoking..."
 
 char* getStatus(bool acquired);
 void printSmokingEvent(char* thread_name);
