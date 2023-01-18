@@ -1,6 +1,5 @@
 #include "threadlogger.h"
 
-
 void printer(char* msg){
 	printf("%s \n", msg);
 }
@@ -13,14 +12,14 @@ char* getStatus(bool acquired){
 }
 
 void printSmokingEvent(char* thread_name){
-	char msg[255];
+	char* msg = malloc(strlen(thread_name) + strlen(SMOKING));
 	strcat(msg, thread_name);
-	strcat(msg, "smoking...");
+	strcat(msg, SMOKING);
 	printer(msg);
 }
 
 void printSemaphoreEvent(char* thread_name, char* sem_name, bool acquired){
-	char msg[255];
+	char* msg = malloc(strlen(thread_name) + strlen(sem_name) + strlen(getStatus(acquired));
 	strcat(msg, thread_name);
 	strcat(msg, getStatus(acquired));
 	strcat(msg, sem_name);
@@ -28,7 +27,7 @@ void printSemaphoreEvent(char* thread_name, char* sem_name, bool acquired){
 }
 
 void printTableClear(char* thread_name){
-	char msg[255];
+	char* msg = malloc(strlen(thread_name) + strlen(CLEARED));
 	strcat(msg, thread_name);
 	strcat(msg, CLEARED);
 	printer(msg);
