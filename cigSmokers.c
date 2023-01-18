@@ -1,83 +1,84 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include "threadlogger.h"
 
 sem_t tobacco;
 sem_t paper;
 sem_t matches;
 sem_t placeOnTable;
 
-void* agentRoutine(void* arg){
+void* agentRoutine(void*arg){
 	int random = rand() % 3;
 	if(random == 0){
+		printf("AGENT: put paper on table.\n");
 		sem_post(&paper);
+		printf("AGENT: put matches on table.\n");
 		sem_post(&matches);
-		printSemaphoreEvent(AGENT, PAPER, false);
-		printSemaphoreEvent(AGENT, MATCHES, false);
 	}
 	else if(random == 1){
+		printf("AGENT: put matches on table.\n");
 		sem_post(&matches);
+		printf("AGENT: put tobacco on table.\n");
 		sem_post(&tobacco);
-		printSemaphoreEvent(AGENT, MATCHES, false);
-		printSemaphoreEvent(AGENT, TOBACCO, false);
 	}
 	else{
+		printf("AGENT: put tobacco on table.\n");
 		sem_post(&tobacco);
+		printf("AGENT: put paper on table.\n");
 		sem_post(&paper);
-		printSemaphoreEvent(AGENT, TOBACCO, false);
-		printSemaphoreEvent(AGENT, PAPER, false);
 	}
+	printf("AGENT: waiting for table to be cleared...\n");
 	sem_wait(&placeOnTable);
 }
 
 void* smokerTobaccoRoutine(void* arg){
 	sem_wait(&paper);
-	printSemaphoreEvent(SM_TOBACCO, PAPER, true);
+	printf("SMOKER_WITH_TOBACCO: took paper.\n");
 	if(sem_trywait(&matches) == 0){
-		printSemaphoreEvent(SM_TOBACCO, MATCHES, true);
+		printf("SMOKER_WITH_TOBACCO: took matches.\n");
+		printf("SMOKER_WITH_TOBACCO: table cleared.\n");
 		sem_post(&placeOnTable);
-		printTableClear(SM_TOBACCO);
-		printSmokingEvent(SM_TOBACCO);
-		sleep(1);
+		printf("SMOKER_WITH_TOBACCO: smoking...\n");
+		sleep(5);
 	}
 	else{
+		printf("SMOKER_WITH_TOBACCO: put back paper.\n");
 		sem_post(&paper);
-		printSemaphoreEvent(SM_TOBACCO, PAPER, false);
 	}
 }
 
 void* smokerPaperRoutine(void* arg){
 	sem_wait(&tobacco);
-	printSemaphoreEvent(SM_PAPER, TOBACCO, true);
+	printf("SMOKER_WITH_PAPER: took tobacco.\n");
 	if(sem_trywait(&matches) == 0){
-		printSemaphoreEvent(SM_PAPER, MATCHES, true);
+		printf("SMOKER_WITH_PAPER: took matches.\n");
+		printf("SMOKER_WITH_PAPER: table cleared.\n");
 		sem_post(&placeOnTable);
-		printTableClear(SM_PAPER);
-		printSmokingEvent(SM_PAPER);
-		sleep(1);
+		printf("SMOKER_WITH_PAPER: smoking...\n");
+		sleep(5);
 	}
 	else{
+		printf("SMOKER_WITH_PAPER: put back tobacco.\n");
 		sem_post(&tobacco);
-		printSemaphoreEvent(SM_PAPER, TOBACCO, false);
 	}
 }
 
 void* smokerMatchesRoutine(void* arg){
 	sem_wait(&tobacco);
-	printSemaphoreEvent(SM_MATCHES, TOBACCO, true);
+	printf("SMOKER_WITH_MATCHES: took tobacco.\n");
 	if(sem_trywait(&paper) == 0){
-		printSemaphoreEvent(SM_MATCHES, PAPER, true);
+		printf("SMOKER_WITH_MATCHES: took paper.\n");
+		printf("SMOKER_WITH_MATCHES: table cleared.\n");
 		sem_post(&placeOnTable);
-		printTableClear(SM_MATCHES);
-		printSmokingEvent(SM_MATCHES);
-		sleep(1);
+		printf("SMOKER_WITH_MATCHES: smoking...\n");
+		sleep(5);
 	}
 	else{
+		printf("SMOKER_WITH_MATCHES: put back tobacco.\n");
 		sem_post(&tobacco);
-		printSemaphoreEvent(SM_MATCHES, TOBACCO, false);
 	}
 }
 
