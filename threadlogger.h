@@ -1,13 +1,18 @@
-const char AGENT[] = "AGENT: ";
-const char SM_TOBACCO[] = "SMOKER_WITH_TOBACCO: ";
-const char SM_PAPER[] = "SMOKER_WITH_PAPER: ";
-const char SM_MATCHES[] = "SMOKER_WITH_MATCHES: ";
-const char TOBACCO[] = "tobacco.";
-const char PAPER[] = "paper. ";
-const char MATCHES[] = "matches.";
-const char ACQUIRED[] = "acquired ";
-const char RELEASED[] = "released ";
-const char CLEARED[] = "cleared ";
+#include <stdio.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+
+#define AGENT "AGENT: "
+#define SM_TOBACCO "SMOKER_WITH_TOBACCO: "
+#define SM_PAPER "SMOKER_WITH_PAPER: "
+#define SM_MATCHES "SMOKER_WITH_MATCHES: "
+#define TOBACCO "tobacco."
+#define PAPER "paper. "
+#define MATCHES "matches."
+#define ACQUIRED "acquired "
+#define RELEASED "released "
+#define CLEARED "table cleared."
 
 char* getStatus(bool acquired);
 void printSmokingEvent(char* thread_name);
