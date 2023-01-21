@@ -8,7 +8,7 @@
 sem_t tobacco;
 sem_t paper;
 sem_t matches;
-sem_t place_on_table;
+sem_t table_cleared;
 pthread_t agent;
 pthread_t smoker_tobacco;
 pthread_t smoker_paper;
@@ -36,7 +36,8 @@ void* agent_routine(void*arg){
 			sem_post(&paper);
 		}
 		printf("AGENT: waiting for table to be cleared...\n");
-		sem_wait(&place_on_table);
+		sem_post(&table_refreshed);
+		sem_wait(&table_cleared);
 	}
 }
 
@@ -49,12 +50,12 @@ void* smoker_tobacco_routine(void* arg){
 		if(sem_trywait(&matches) == 0){
 			printf("SMOKER_WITH_TOBACCO: took matches.\n");
 			printf("SMOKER_WITH_TOBACCO: table cleared.\n");
-			sem_post(&place_on_table);
+			sem_post(&table_cleared);
 			printf("SMOKER_WITH_TOBACCO: smoking...\n");
 			sleep(1);
 		}
 		else{
-			printf("SMOKER_WITH_TOBACCO: no matches, put back paper.\n");
+			printf("SMOKER_WITH_TOBACCO: no matches, put back paper. Waiting for table to be refreshed...\n");
 			sem_post(&paper);
 			usleep(500000);
 		}
@@ -70,7 +71,7 @@ void* smoker_paper_routine(void* arg){
 		if(sem_trywait(&matches) == 0){
 			printf("SMOKER_WITH_PAPER: took matches.\n");
 			printf("SMOKER_WITH_PAPER: table cleared.\n");
-			sem_post(&place_on_table);
+			sem_post(&table_cleared);
 			printf("SMOKER_WITH_PAPER: smoking...\n");
 			sleep(1);
 		}
@@ -91,7 +92,7 @@ void* smoker_matches_routine(void* arg){
 		if(sem_trywait(&paper) == 0){
 			printf("SMOKER_WITH_MATCHES: took paper.\n");
 			printf("SMOKER_WITH_MATCHES: table cleared.\n");
-			sem_post(&place_on_table);
+			sem_post(&table_cleared);
 			printf("SMOKER_WITH_MATCHES: smoking...\n");
 			sleep(1);
 		}
@@ -104,11 +105,11 @@ void* smoker_matches_routine(void* arg){
 }
 
 int main(){
-	//Semaphore initialization
 	sem_init(&tobacco, 0, 0);
 	sem_init(&paper, 0, 0);
 	sem_init(&matches, 0, 0);
-	sem_init(&place_on_table, 0, 0);
+	sem_init(&table_cleared, 0, 0);
+	sem_init(&table_refreshed, 0, 0);
 	
 	srand(time(NULL));
 	
