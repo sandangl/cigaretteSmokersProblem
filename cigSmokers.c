@@ -51,11 +51,12 @@ void* smoker_tobacco_routine(void* arg){
 			printf("SMOKER_WITH_TOBACCO: table cleared.\n");
 			sem_post(&place_on_table);
 			printf("SMOKER_WITH_TOBACCO: smoking...\n");
-			usleep(1000000);
+			sleep(1);
 		}
 		else{
 			printf("SMOKER_WITH_TOBACCO: no matches, put back paper.\n");
 			sem_post(&paper);
+			usleep(500000);
 		}
 	}
 }
@@ -71,11 +72,12 @@ void* smoker_paper_routine(void* arg){
 			printf("SMOKER_WITH_PAPER: table cleared.\n");
 			sem_post(&place_on_table);
 			printf("SMOKER_WITH_PAPER: smoking...\n");
-			usleep(1000000);
+			sleep(1);
 		}
 		else{
 			printf("SMOKER_WITH_PAPER: no matches, put back tobacco.\n");
 			sem_post(&tobacco);
+			usleep(500000);
 		}
 	}
 }
@@ -91,11 +93,12 @@ void* smoker_matches_routine(void* arg){
 			printf("SMOKER_WITH_MATCHES: table cleared.\n");
 			sem_post(&place_on_table);
 			printf("SMOKER_WITH_MATCHES: smoking...\n");
-			usleep(1000000);
+			sleep(1);
 		}
 		else{
 			printf("SMOKER_WITH_MATCHES: no paper, put back tobacco.\n");
 			sem_post(&tobacco);
+			usleep(500000);
 		}
 	}
 }
@@ -118,9 +121,7 @@ int main(){
 	pthread_create(&smoker_matches, NULL, &smoker_matches_routine, NULL);
 	pthread_detach(smoker_matches);
 	
-	while(1){
-		;
-	}
+	while(1) ;
 	
 	return 0;
 }
