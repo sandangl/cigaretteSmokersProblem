@@ -18,25 +18,21 @@ void* agent_routine(void*arg){
 	while(1){
 		int random = rand() % 3;
 		if(random == 0){
-			printf("AGENT: put paper on table.\n");
+			printf("AGENT: put paper on table.\nAGENT: put matches on table.\n");
 			sem_post(&paper);
-			printf("AGENT: put matches on table.\n");
 			sem_post(&matches);
 		}
 		else if(random == 1){
-			printf("AGENT: put matches on table.\n");
+			printf("AGENT: put matches on table.\nAGENT: put tobacco on table.\n");
 			sem_post(&matches);
-			printf("AGENT: put tobacco on table.\n");
 			sem_post(&tobacco);
 		}
 		else{
-			printf("AGENT: put tobacco on table.\n");
+			printf("AGENT: put tobacco on table.\nAGENT: put paper on table.\n");
 			sem_post(&tobacco);
-			printf("AGENT: put paper on table.\n");
 			sem_post(&paper);
 		}
 		printf("AGENT: waiting for table to be cleared...\n");
-		sem_post(&table_refreshed);
 		sem_wait(&table_cleared);
 	}
 }
@@ -104,23 +100,32 @@ void* smoker_matches_routine(void* arg){
 	}
 }
 
+void new_detached_thread(pthread_t *t, void* (*routine) (void* arg)){
+	pthread_create(t, NULL, routine, NULL);
+	pthread_detach(*t);
+}
+
 int main(){
 	sem_init(&tobacco, 0, 0);
 	sem_init(&paper, 0, 0);
 	sem_init(&matches, 0, 0);
 	sem_init(&table_cleared, 0, 0);
-	sem_init(&table_refreshed, 0, 0);
 	
 	srand(time(NULL));
 	
-	pthread_create(&agent, NULL, &agent_routine, NULL);
+	new_detached_thread(&agent, &agent_routine);
+	new_detached_thread(&smoker_tobacco, &smoker_tobacco_routine);
+	new_detached_thread(&smoker_paper, &smoker_paper_routine);
+	new_detached_thread(&smoker_matches, &smoker_matches_routine);
+	
+	/*pthread_create(&agent, NULL, &agent_routine, NULL);
 	pthread_detach(agent);
 	pthread_create(&smoker_tobacco, NULL, &smoker_tobacco_routine, NULL);
 	pthread_detach(smoker_tobacco);
 	pthread_create(&smoker_paper, NULL, &smoker_paper_routine, NULL);
 	pthread_detach(smoker_paper);
 	pthread_create(&smoker_matches, NULL, &smoker_matches_routine, NULL);
-	pthread_detach(smoker_matches);
+	pthread_detach(smoker_matches);*/
 	
 	while(1) ;
 	
