@@ -1,5 +1,4 @@
 #include "pth_workers.h"
-#include <stdlib.h>
 #define N 4
 
 typedef struct {

@@ -150,11 +150,6 @@ int main(){
 	sem_init(&matches, 0, 0);
 	sem_init(&table_cleared, 0, 0);
 	
-	agent.thread_id = 0;
-	smoker_tobacco.thread_id = 1;
-	smoker_matches.thread_id = 2;
-	smoker_paper.thread_id = 3;
-
 	agent.routine = &agent_routine;
 	smoker_tobacco.routine = &smoker_tobacco_routine;
 	smoker_matches.routine = &smoker_matches_routine;
